@@ -1,10 +1,38 @@
 <?php 
+function getNamaKolamById($id)
+{
+    global $conn;
+
+    $q = "SELECT nama FROM kolam WHERE id='$id'";
+    $sql = $conn->query($q);
+    $data = [];
+    while($row = $sql->fetch_assoc()){
+        //tampung di arr $data
+        array_push($data, $row);
+
+    }
+    return $data[0]['nama'];
+}
+
 function readKolam()
 {
     global $conn;
 
     $next = isset($_GET["next"]) ? $_GET["next"] : 4 ;
     $q = "SELECT * FROM kolam ORDER BY id DESC LIMIT 0,{$next}";
+    $sql = $conn->query($q);
+    $data = [];
+    while($row = $sql->fetch_assoc()){
+        array_push($data, $row);
+
+    }
+
+    return $data;
+}
+function readKolamAll()
+{
+    global $conn;
+    $q = "SELECT * FROM kolam";
     $sql = $conn->query($q);
     $data = [];
     while($row = $sql->fetch_assoc()){

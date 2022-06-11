@@ -11,9 +11,3 @@
     <!-- Custom scripts for all pages-->
     <script src="<?= PATH_JS; ?>/sb-admin-2.min.js"></script>
 
-    <!-- Page level plugins -->
-    <script src="<?= PATH_VENDOR; ?>/chart.js/Chart.min.js"></script>
-
-    <!-- Page level custom scripts -->
-    <script src="<?= PATH_JS; ?>/demo/chart-area-demo.js"></script>
-    <script src="<?= PATH_JS; ?>/demo/chart-pie-demo.js"></script>

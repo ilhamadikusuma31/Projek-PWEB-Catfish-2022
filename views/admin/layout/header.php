@@ -49,6 +49,7 @@ if(isset($_POST['sbmt-ganti-pw'])){
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
     <link href="<?=PATH_CSS; ?>/sb-admin-2.min.css" rel="stylesheet">
     <link href="<?=PATH_CSS; ?>/admin.css" rel="stylesheet">
+    <link href="<?=PATH_CSS; ?>/style.css" rel="stylesheet">
 
     <link rel="icon" href="<?=PATH_IMG; ?>/catfish.jpg" class="rounded-5">
 

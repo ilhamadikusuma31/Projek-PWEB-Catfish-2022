@@ -7,23 +7,27 @@
 //controller
 
 $pesan;
+require '../../model/aktivitas.php';
+
+require '../../model/jenisAktivitas.php';
 require '../../model/karyawan.php';
-require '../../model/jenisKelamin.php';
-$data_karyawan = readKaryawan();
-$data_jenisKelamin = readJenisKelamin();
+require '../../model/kolam.php';
+
+$data_aktivitas = readAktivitas();
+
 
 
 if(isset($_POST["sbmt-tambah"])){
-    $pesan = createKaryawan($_POST);
+    $pesan = createAktivitas($_POST);
 }
 
 if(isset($_POST["sbmt-hapus"])){
-    $id = $_POST['id_karyawan'];
-    $pesan = deleteKaryawan($id);
+    $id = $_POST['id_aktivitas'];
+    $pesan = deleteAktivitas($id);
 }
 
 if(isset($_POST["sbmt-edit"])){
-    $pesan = editKaryawan($_POST);
+    $pesan = editAktivitas($_POST);
 }
 ?>
 
@@ -48,47 +52,29 @@ if(isset($_POST["sbmt-edit"])){
     <?php endif ?>
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Data Karyawan</h1>
+        <h1 class="h3 mb-0 text-gray-800">Data Aktivitas</h1>
         <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                 class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
     </div>
-    
-    <!-- tombol tambah, refresh, filter -->
-    <div class="container mt-3">
+
+</div>
+  <!-- tombol tambah, refresh, filter -->
+  <div class="container mt-3">
         <div class="row">
             <div class="col-md-3">
                 <a class="btn btn-primary" href="#" data-toggle="modal" data-target="#tambahModal" role="button"><i class="bi bi-plus-circle me-1"></i></a>
                 <a class="btn btn-success" id="btn-refresh" role="button"><i class="bi bi-arrow-clockwise"></i></a>
-                <a class="btn btn-warning" id="btn-asc" role="button"><i class='bi bi-arrow-up-circle'></i></a>
-                <a class="btn btn-warning" id="btn-desc" role="button"><i class='bi bi-arrow-down-circle'></i></a>
-            </div>
-            <div class="col-md-3">
-                <select name="kotakFilterJenisKelamin" id="kotakFilterJenisKelamin" class="form-select form-select-sm" aria-label="Default select example">
-                    <option value=""> Jenis Kelamin </option>
-                    <?php foreach($data_jenisKelamin as $jk): ?>
-                        <option value="<?= $jk['id']; ?>"> <?= $jk['nama']; ?> </option>
-                    <?php endforeach ?>
-                </select>
-                </div> 
-            <div class="col">
-                <div class="row">
-                    <input class="form-control me-2" placeholder="ketik kata kunci" aria-label="Search" id="kotakpencarian">
-                </div>
-            </div>
+
             </div>
         </div>
     </div>
     <!-- Content Row -->
-    <div class="row ms-1 me-1" id="dinamisData">
-    <!-- data karyawan -->
-      </div>
-      <!-- /.container-fluid -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
+    <div class="row m-3" id="dinamisData">
 
-      <div class="row mt-5 ms-1 me-1">
-      <div class="col d-grid">
-          <button class="btn btn-primary" type="button" id="btn-loadMore"><i class="bi bi-arrow-down-circle-fill me-1"></i>Muat Lagi</button>
-      </div>
+    </div>
 
+    <!-- /.container-fluid -->
 
     <!--Tambah Modal-->
     <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -96,7 +82,7 @@ if(isset($_POST["sbmt-edit"])){
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Mau Nambah Karyawan?</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Mau Nambah Aktivitas?</h5>
                     <button class="tombolCancelModal btn" class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -104,30 +90,39 @@ if(isset($_POST["sbmt-edit"])){
                 <div class="modal-body">
                 <form id="formTambah" action="" method="POST">
                     <div class="mb-3">
-                      <label for="nama_lengkap"class="form-label">Nama Lengkap</label>
-                      <input type="text" class="form-control" name="nama_lengkap" id="nama_lengkap" autocomplete="off"  required>
+                      <label for="tanggal"class="form-label">Tanggal</label>
+                      <input type="date" class="form-control" name="tanggal" id="nama_lengkap" autocomplete="off"  required>
                     </div>
                     
                     <div class="mb-3">
-                        <label for="id_jenis_kelamin"class="form-label">Jenis Kelamin</label>
-                        <select class="form-select" id="id_jenis_kelamin" name="id_jenis_kelamin" value='' required>
+                        <label for="id_jenis_aktivitas"class="form-label">Jenis</label>
+                        <select class="form-select" id="id_jenis_aktivitas" name="id_jenis_aktivitas" value='' required>
                           <option value="-" selected>-</option>
-                          <?php foreach($data_jenisKelamin as $jk): ?>
-                            <option value="<?= $jk['id']; ?>"><?= $jk['nama']; ?></option>
+                          <?php $nama_jenis_all = readJenisAktivitasAll() ?>
+                          <?php foreach($nama_jenis_all as $d): ?>
+                            <option value="<?= $d['id']; ?>"><?= $d['nama']; ?></option>
                           <?php endforeach?> 
                         </select>
                     </div>
                     <div class="mb-3">
-                      <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
-                      <input type="date" class="form-control" name="tanggal_lahir" id="tanggal_lahir" autocomplete="off" required>
+                        <label for="id_karyawan"class="form-label">Karyawan</label>
+                        <select class="form-select" id="id_karyawan" name="id_karyawan" value='' required>
+                          <option value="-" selected>-</option>
+                          <?php $nama_karyawan_all = readKaryawanAll() ?>
+                          <?php foreach($nama_karyawan_all as $d): ?>
+                            <option value="<?= $d['id']; ?>"><?= $d['nama_lengkap']; ?></option>
+                          <?php endforeach?> 
+                        </select>
                     </div>
                     <div class="mb-3">
-                      <label for="alamat" class="form-label">Alamat</label>
-                      <input type="text" class="form-control" name="alamat" id="alamat" autocomplete="off" required>
-                    </div>
-                    <div class="mb-3">
-                      <label for="no_telpon" class="form-label">No Telpon</label>
-                      <input type="number" class="form-control" name="no_telpon" id="no_telpon" autocomplete="off" required>
+                        <label for="id_kolam"class="form-label">Kolam</label>
+                        <select class="form-select" id="id_kolam" name="id_kolam" value='' required>
+                          <option value="-" selected>-</option>
+                          <?php $nama_kolam_all = readKolamAll() ?>
+                          <?php foreach($nama_kolam_all as $d): ?>
+                            <option value="<?= $d['id']; ?>"><?= $d['nama']; ?></option>
+                          <?php endforeach?> 
+                        </select>
                     </div>
                     
                   </form>
@@ -164,34 +159,35 @@ if(isset($_POST["sbmt-edit"])){
 
 <?php require 'layout/footer.php'?>       
 <?php require 'layout/script.php'?>  
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
+<script src="//cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.js"></script>
+<script src="//cdn.datatables.net/responsive/2.2.9/css/dataTables.responsive.css"></script>
+<script>
+$(document).ready( function () {
+    $('#tabelAktivitas').DataTable();
+} );
+$('#tabelAktivitas').DataTable( {
+        responsive: {
+            details: {
+                display: $.fn.dataTable.Responsive.display.childRowImmediate
+            }
+        }
+    } );
+</script>
 <script>
     let page = 4;
     $(document).ready(function () {
 
     $('#btn-refresh').on('click', function () {
-        $('#dinamisData').load('../../model/ajax/karyawan.php')
-    })
-
-    $('#btn-asc').on('click', function () {
-        $('#dinamisData').load('../../model/ajax/karyawan.php?asc=true&desc=false');
-    })
-    $('#btn-desc').on('click', function () {
-        $('#dinamisData').load('../../model/ajax/karyawan.php?asc=false&desc=true');
-    })
-
-    $('#btn-loadMore').on('click', function () {
-        $('#dinamisData').load('../../model/ajax/karyawan.php?next='+page)
-        page += 2;
+        $('#dinamisData').load('../../model/ajax/aktivitas.php')
     }).trigger('click');
 
-    $('#kotakpencarian').on('keydown', function () {
-        $('#dinamisData').load('../../model/ajax/karyawan.php?keyword=' + $('#kotakpencarian').val());
-    });
-
-    $('#kotakFilterJenisKelamin').on('change', function () {
-        $('#dinamisData').load('../../model/ajax/karyawan.php?jk=true&keyword=' + $('#kotakFilterJenisKelamin').val());
-    });
-
+    $('#btn-asc').on('click', function () {
+        $('#dinamisData').load('../../model/ajax/aktivitas.php?asc=true&desc=false');
+    })
+    $('#btn-desc').on('click', function () {
+        $('#dinamisData').load('../../model/ajax/aktivitas.php?asc=false&desc=true');
+    })
 
 });
 </script>

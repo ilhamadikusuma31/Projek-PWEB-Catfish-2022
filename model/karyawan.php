@@ -1,4 +1,20 @@
 <?php 
+
+function getNamaKaryawanById($id)
+{
+    global $conn;
+
+    $q = "SELECT nama_lengkap FROM karyawan WHERE id='$id'";
+    $sql = $conn->query($q);
+    $data = [];
+    while($row = $sql->fetch_assoc()){
+        //tampung di arr $data
+        array_push($data, $row);
+
+    }
+    return $data[0]['nama_lengkap'];
+}
+
 function readKaryawan()
 {
     global $conn;
@@ -9,9 +25,19 @@ function readKaryawan()
     $data = [];
     while($row = $sql->fetch_assoc()){
         array_push($data, $row);
-
     }
+    return $data;
+}
 
+function readKaryawanAll()
+{
+    global $conn;
+    $q = "SELECT * FROM karyawan";
+    $sql = $conn->query($q);
+    $data = [];
+    while($row = $sql->fetch_assoc()){
+        array_push($data, $row);
+    }
     return $data;
 }
 function readKaryawanFilter($keyword)

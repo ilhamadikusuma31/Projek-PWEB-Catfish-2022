@@ -1,5 +1,19 @@
 <?php 
-function readJenisKelamin()
+function getNamaJenisAktivitasById($id)
+{
+    global $conn;
+
+    $q = "SELECT nama FROM jenis_aktivitas WHERE id='$id'";
+    $sql = $conn->query($q);
+    $data = [];
+    while($row = $sql->fetch_assoc()){
+        //tampung di arr $data
+        array_push($data, $row);
+
+    }
+    return $data[0]['nama'];
+}
+function readJenisAktivitasAll()
 {
     global $conn;
 
@@ -7,7 +21,6 @@ function readJenisKelamin()
     $sql = $conn->query($q);
     $data = [];
     while($row = $sql->fetch_assoc()){
-
         //tampung di arr $data
         array_push($data, $row);
 
